@@ -1,6 +1,11 @@
 # Base image
 FROM archlinux:latest
 
+# Create a new user
+ARG USERNAME=user
+ARG USER_UID=1000
+ARG USER_GID=1000
+
 # Set environment variables
 ENV TZ=Europe/Vilnius
 ENV LANG=en_US.UTF-8
@@ -31,17 +36,27 @@ RUN ln -sf /usr/share/zoneinfo/Europe/Vilnius /etc/localtime && \
 # Set Neovim as default editor
 RUN ln -sf /usr/bin/nvim /usr/bin/editor
 
-RUN mkdir -p /root/.config
 
-COPY dotfiles/nvim/.config/nvim /root/.config/nvim
-COPY dotfiles/starship/.config/starship.toml /root/.config/starship.toml
-COPY dotfiles/tmux/.config/tmux /root/.config/tmux
-COPY dotfiles/tmux/.tmux /root/.tmux
+# Add user and group
+RUN groupadd --gid $USER_GID $USERNAME && \
+    useradd --uid $USER_UID --gid $USER_GID --create-home $USERNAME && \
+    echo "$USERNAME ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers
 
-RUN echo 'eval "$(starship init bash)"' >> /root/.bashrc
+# Copy configurations for the user
+RUN mkdir -p /home/$USERNAME/.config && \
+    echo 'eval "$(starship init bash)"' >> /home/$USERNAME/.bashrc
 
-# Work directory
-WORKDIR /root
+COPY dotfiles/nvim/.config/nvim /home/$USERNAME/.config/nvim
+COPY dotfiles/starship/.config/starship.toml /home/$USERNAME/.config/starship.toml
+COPY dotfiles/tmux/.config/tmux /home/$USERNAME/.config/tmux
+COPY dotfiles/tmux/.tmux /home/$USERNAME/.tmux
+
+# Set ownership of home directory
+RUN chown -R $USERNAME:$USERNAME /home/$USERNAME
+
+# Switch to the new user
+USER $USERNAME
+WORKDIR /home/$USERNAME
 
 # Default command (bash shell)
 CMD ["bash"]
