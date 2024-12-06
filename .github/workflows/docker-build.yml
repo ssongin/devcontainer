@@ -24,6 +24,7 @@ jobs:
         with:
           fetch-depth: 0  # Fetch all history to access Git tags
           submodules: recursive
+          fetch-tags: true
 
       # Set up Docker Buildx (supports multi-platform builds)
       - name: Set up Docker Buildx
