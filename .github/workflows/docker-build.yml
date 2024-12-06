@@ -18,13 +18,21 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # Checkout the repository, including submodules
+      # Checkout the repository, including submodules and tags
       - name: Checkout Repository
         uses: actions/checkout@v3
         with:
           fetch-depth: 0  # Fetch all history to access Git tags
           submodules: recursive
           fetch-tags: true
+
+      # Fetch all tags explicitly (optional, for debugging)
+      - name: Fetch All Tags
+        run: git fetch --tags
+
+      # List all available tags (optional, for debugging)
+      - name: List Git Tags
+        run: git tag
 
       # Set up Docker Buildx (supports multi-platform builds)
       - name: Set up Docker Buildx
@@ -42,7 +50,11 @@ jobs:
         id: get_tag
         run: |
           # Get the latest tag or default to 1.0.0
-          latest_tag=$(git describe --tags --abbrev=0 || echo "1.0.0")
+          if git describe --tags --abbrev=0 >/dev/null 2>&1; then
+            latest_tag=$(git describe --tags --abbrev=0)
+          else
+            latest_tag="1.0.0"
+          fi
           echo "Latest tag: $latest_tag"
           # Extract the major, minor, and patch numbers
           IFS='.' read -r major minor patch <<< "$latest_tag"
@@ -69,5 +81,9 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git tag ${{ env.new_tag }}
-          git push origin ${{ env.new_tag }}
+          if git rev-parse "$new_tag" >/dev/null 2>&1; then
+            echo "Tag $new_tag already exists. Skipping tag creation."
+          else
+            git tag $new_tag
+            git push origin $new_tag
+          fi
