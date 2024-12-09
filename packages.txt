@@ -12,3 +12,7 @@ starship
 npm
 tzdata
 openssh
+jdk-openjdk
+go
+ansible
+terraform
