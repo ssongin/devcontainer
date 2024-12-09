@@ -1,0 +1,14 @@
+tmux
+neovim
+git
+fzf
+wget
+curl
+unzip
+tar
+base-devel
+lazygit
+starship
+npm
+tzdata
+openssh

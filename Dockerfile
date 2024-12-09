@@ -9,24 +9,13 @@ ARG USER_GID=1000
 # Set environment variables
 ENV TZ=Europe/Vilnius
 ENV LANG=en_US.UTF-8
-# ENV LC_ALL=en_US.UTF-8
 
-# Update and install dependencies
+# Copy the list of applications
+COPY packages.txt /tmp/packages.txt
+
+# Update and install dependencies from file
 RUN pacman -Sy --noconfirm && \
-    pacman -S --noconfirm \
-    tmux \
-    neovim \
-    git \
-    fzf \
-    wget \
-    curl \
-    unzip \
-    tar \
-    base-devel \
-    lazygit \
-    starship \
-    npm \
-    tzdata && \
+    xargs -a /tmp/packages.txt pacman -S --noconfirm && \
     pacman -Scc --noconfirm
 
 # Set the timezone
@@ -35,7 +24,6 @@ RUN ln -sf /usr/share/zoneinfo/Europe/Vilnius /etc/localtime && \
 
 # Set Neovim as default editor
 RUN ln -sf /usr/bin/nvim /usr/bin/editor
-
 
 # Add user and group
 RUN groupadd --gid $USER_GID $USERNAME && \
