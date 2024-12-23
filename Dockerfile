@@ -34,10 +34,13 @@ RUN groupadd --gid $USER_GID $USERNAME && \
 RUN mkdir -p /home/$USERNAME/.config && \
     echo 'eval "$(starship init bash)"' >> /home/$USERNAME/.bashrc
 
-COPY dotfiles/nvim/.config/nvim /home/$USERNAME/.config/nvim
+# COPY dotfiles/nvim/.config/nvim /home/$USERNAME/.config/nvim
 COPY dotfiles/starship/.config/starship.toml /home/$USERNAME/.config/starship.toml
 COPY dotfiles/tmux/.config/tmux /home/$USERNAME/.config/tmux
 COPY dotfiles/tmux/.tmux /home/$USERNAME/.tmux
+
+# Clone lazyvim configs for neovim
+RUN git clone https://github.com/LazyVim/starter ~/.config/nvim
 
 # Set ownership of home directory
 RUN chown -R $USERNAME:$USERNAME /home/$USERNAME

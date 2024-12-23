@@ -1,6 +1,7 @@
 tmux
 neovim
 git
+ripgrep
 fzf
 wget
 curl
