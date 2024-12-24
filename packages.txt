@@ -9,11 +9,12 @@ unzip
 tar
 base-devel
 lazygit
-starship
 npm
 tzdata
+rust
 openssh
 jdk-openjdk
 go
 ansible
 terraform
+zsh
