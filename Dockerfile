@@ -49,7 +49,7 @@ WORKDIR /home/$USERNAME/dotfiles
 RUN stow --target="$HOME" lazyvim
 RUN stow --target="$HOME" tmux
 RUN stow --target="$HOME" zsh
-RUN stow --target="$HOME/.oh-my-zsh" oh-my-zsh
+# RUN stow --target="$HOME/.oh-my-zsh" oh-my-zsh
 
 RUN git restore .
 
