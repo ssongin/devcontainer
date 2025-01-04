@@ -48,8 +48,8 @@ RUN yes | sh -c "$(wget -O- https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/ma
 WORKDIR /home/$USERNAME/dotfiles
 RUN stow --target="$HOME" lazyvim
 RUN stow --target="$HOME" tmux
-RUN stow --target="$HOME" zsh
-# RUN stow --target="$HOME/.oh-my-zsh" oh-my-zsh
+RUN stow --adapt --target="$HOME" zsh
+RUN stow --adapt --target="$HOME/.oh-my-zsh" oh-my-zsh
 
 RUN git restore .
 
