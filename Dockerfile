@@ -36,6 +36,12 @@ RUN mkdir -p /home/$USERNAME/.config
 # Install Zsh and Oh My Zsh
 RUN yes | sh -c "$(wget -O- https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
 
+# Set ownership of home directory
+RUN chown -R $USERNAME:$USERNAME /home/$USERNAME
+
+# Switch to the new user
+USER $USERNAME
+
 WORKDIR /home/$USERNAME
 RUN git clone https://github.com/ssongin/dotfiles.git
 
@@ -46,12 +52,6 @@ RUN stow --adopt --target="$HOME" zsh
 
 RUN git restore .
 
-
-# Set ownership of home directory
-RUN chown -R $USERNAME:$USERNAME /home/$USERNAME
-
-# Switch to the new user
-USER $USERNAME
 WORKDIR /home/$USERNAME
 
 # Default command (Zsh shell)
