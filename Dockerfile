@@ -40,9 +40,9 @@ COPY dotfiles /home/$USERNAME/dotfiles
 WORKDIR /home/$USERNAME/dotfiles
 RUN stow --target="$HOME" lazyvim
 RUN stow --target="$HOME" tmux
-RUN rm -fr /home/$USERNAME/.oh-my-zsh/custom && \
-    rm /home/$USERNAME/.zshrc && \
-    stow --target="$HOME" zsh
+RUN rm -fr /home/$USERNAME/.oh-my-zsh/custom 
+RUN rm /home/$USERNAME/.zshrc
+RUN stow --target="$HOME" zsh
 
 
 # Set ownership of home directory
