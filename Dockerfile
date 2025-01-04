@@ -40,7 +40,7 @@ RUN chown -R $USERNAME:$USERNAME /home/$USERNAME
 USER $USERNAME
 
 WORKDIR /home/$USERNAME
-RUN git clone https://github.com/ssongin/dotfiles.git
+RUN git clone  --recurse-submodules --remote-submodules https://github.com/ssongin/dotfiles.git
 
 # Install Zsh and Oh My Zsh
 RUN yes | sh -c "$(wget -O- https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
@@ -49,6 +49,7 @@ WORKDIR /home/$USERNAME/dotfiles
 RUN stow --target="$HOME" lazyvim
 RUN stow --target="$HOME" tmux
 RUN stow --adopt --target="$HOME" zsh
+RUN rm -fr /home/$USERNAME/.oh-my-zsh/custom
 RUN stow --adopt --target="$HOME/.oh-my-zsh" oh-my-zsh
 
 RUN git restore .
