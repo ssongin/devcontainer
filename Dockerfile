@@ -33,9 +33,6 @@ RUN groupadd --gid $USER_GID $USERNAME && \
 # Copy configurations for the user
 RUN mkdir -p /home/$USERNAME/.config
 
-# Install Zsh and Oh My Zsh
-RUN yes | sh -c "$(wget -O- https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
-
 # Set ownership of home directory
 RUN chown -R $USERNAME:$USERNAME /home/$USERNAME
 
@@ -44,6 +41,9 @@ USER $USERNAME
 
 WORKDIR /home/$USERNAME
 RUN git clone https://github.com/ssongin/dotfiles.git
+
+# Install Zsh and Oh My Zsh
+RUN yes | sh -c "$(wget -O- https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
 
 WORKDIR /home/$USERNAME/dotfiles
 RUN stow --target="$HOME" lazyvim
