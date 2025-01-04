@@ -41,7 +41,7 @@ WORKDIR /home/$USERNAME/dotfiles
 RUN stow --target="$HOME" lazyvim
 RUN stow --target="$HOME" tmux
 RUN rm -fr /home/$USERNAME/.oh-my-zsh/custom 
-RUN rm /home/$USERNAME/.zshrc
+# RUN rm /home/$USERNAME/.zshrc
 RUN stow --target="$HOME" zsh
 
 
