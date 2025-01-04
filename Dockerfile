@@ -36,11 +36,15 @@ RUN mkdir -p /home/$USERNAME/.config
 # Install Zsh and Oh My Zsh
 RUN yes | sh -c "$(wget -O- https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
 
-COPY dotfiles /home/$USERNAME/dotfiles
+WORKDIR /home/$USERNAME
+RUN git clone https://github.com/ssongin/dotfiles.git
+
 WORKDIR /home/$USERNAME/dotfiles
 RUN stow --target="$HOME" lazyvim
 RUN stow --target="$HOME" tmux
-RUN rm -fr /home/$USERNAME/.oh-my-zsh/custom && stow --target="$HOME" zsh
+RUN stow --adopt --target="$HOME" zsh
+
+RUN git restore .
 
 
 # Set ownership of home directory
