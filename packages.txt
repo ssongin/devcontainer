@@ -21,3 +21,5 @@ zsh
 stow
 unzip
 maven
+luarocks
+fd
