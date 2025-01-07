@@ -23,3 +23,5 @@ unzip
 maven
 luarocks
 fd
+tree-sitter
+helm
