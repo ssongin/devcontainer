@@ -25,3 +25,5 @@ luarocks
 fd
 tree-sitter
 helm
+rust
+lua
