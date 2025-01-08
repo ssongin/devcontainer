@@ -15,20 +15,20 @@ COPY packages.txt /tmp/packages.txt
 
 # Update and install dependencies from file
 RUN pacman -Sy --noconfirm && \
-    xargs -a /tmp/packages.txt pacman -S --noconfirm && \
-    pacman -Scc --noconfirm
+  xargs -a /tmp/packages.txt pacman -S --noconfirm && \
+  pacman -Scc --noconfirm
 
 # Set the timezone
 RUN ln -sf /usr/share/zoneinfo/Europe/Vilnius /etc/localtime && \
-    echo "Europe/Vilnius" > /etc/timezone
+  echo "Europe/Vilnius" > /etc/timezone
 
 # Set Neovim as default editor
 RUN ln -sf /usr/bin/nvim /usr/bin/editor
 
 # Add user and group
 RUN groupadd --gid $USER_GID $USERNAME && \
-    useradd --uid $USER_UID --gid $USER_GID --create-home $USERNAME && \
-    echo "$USERNAME ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers
+  useradd --uid $USER_UID --gid $USER_GID --create-home $USERNAME && \
+  echo "$USERNAME ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers
 
 # Copy configurations for the user
 RUN mkdir -p /home/$USERNAME/.config
@@ -38,6 +38,10 @@ RUN chown -R $USERNAME:$USERNAME /home/$USERNAME
 
 # Switch to the new user
 USER $USERNAME
+
+# Git configurations
+RUN git config --global core.fileMode false
+RUN git config --global core.autocrlf input
 
 WORKDIR /home/$USERNAME
 RUN git clone  --recurse-submodules --remote-submodules https://github.com/ssongin/dotfiles.git
