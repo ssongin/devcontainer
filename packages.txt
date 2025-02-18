@@ -31,5 +31,6 @@ tree-sitter
 tzdata
 unzip
 wget
+yazi
 zoxide
 zsh
