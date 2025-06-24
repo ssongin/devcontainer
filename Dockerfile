@@ -36,6 +36,12 @@ RUN mkdir -p /home/$USERNAME/.config
 # Set ownership of home directory
 RUN chown -R $USERNAME:$USERNAME /home/$USERNAME
 
+# Generate the en_US.UTF-8 locale
+RUN echo "en_US.UTF-8 UTF-8" >> /etc/locale.gen && \
+    locale-gen && \
+    export LANG=en_US.UTF-8 && \
+    export LC_ALL=en_US.UTF-8
+
 # Switch to the new user
 USER $USERNAME
 
