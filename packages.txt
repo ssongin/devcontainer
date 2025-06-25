@@ -11,6 +11,7 @@ glibc
 go
 helm
 jdk-openjdk
+k9s
 kubectl
 lazygit
 lua
@@ -24,6 +25,7 @@ openssh
 p7zip
 ripgrep
 rust
+sshpass
 stow
 tar
 terraform
