@@ -1,0 +1,24 @@
+version: "3.9"
+
+services:
+  dev:
+    image: yetanotherhappydev/editor:latest
+    container_name: dev_tools
+    stdin_open: true
+    tty: true
+    volumes:
+      - "C:/Users/ssong/Projects:/home/user/projects"
+      - "C:/Users/ssong/.kube:/home/user/.kube"
+      - "C:/Users/ssong/.ssh:/home/user/.ssh"
+      - dev_cache:/root/.cache
+    ports:
+      - "8080:8080"
+      - "3000:3000"
+    environment:
+      - DISPLAY=${DISPLAY}
+    working_dir: /home/user/projects
+    network_mode: bridge
+    restart: unless-stopped
+
+volumes:
+  dev_cache:
