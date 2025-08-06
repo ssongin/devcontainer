@@ -28,6 +28,7 @@ rust
 sshpass
 stow
 tar
+tcpdump
 terraform
 tmux
 tree-sitter

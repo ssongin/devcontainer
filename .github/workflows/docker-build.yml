@@ -6,7 +6,6 @@ on:
       - master
     paths:
       - Dockerfile
-      - dotfiles/**
       - packages.txt
       - .github/workflows/docker-build.yml
   workflow_dispatch:
