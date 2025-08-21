@@ -19,7 +19,7 @@ RUN pacman -Sy --noconfirm && \
   xargs -a /tmp/packages.txt pacman -S --noconfirm && \
   pacman -Scc --noconfirm
 
-RUN pip3 install --no-cache-dir -r pip.txt
+RUN pip3 install --no-cache-dir -r /tmp/pip.txt
 
 # Set the timezone
 RUN ln -sf /usr/share/zoneinfo/Europe/Vilnius /etc/localtime && \
