@@ -12,11 +12,14 @@ ENV LANG=en_US.UTF-8
 
 # Copy the list of applications
 COPY packages.txt /tmp/packages.txt
+COPY pip.txt /tmp/pip.txt
 
 # Update and install dependencies from file
 RUN pacman -Sy --noconfirm && \
   xargs -a /tmp/packages.txt pacman -S --noconfirm && \
   pacman -Scc --noconfirm
+
+RUN pip3 install --no-cache-dir -r pip.txt
 
 # Set the timezone
 RUN ln -sf /usr/share/zoneinfo/Europe/Vilnius /etc/localtime && \
