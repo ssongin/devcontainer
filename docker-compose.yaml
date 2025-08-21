@@ -19,6 +19,13 @@ services:
     working_dir: /home/user/projects
     network_mode: bridge
     restart: unless-stopped
-
+    command: >
+      sh -c "
+      chown -R user:user /home/user &&
+      chmod 700 /home/user/.ssh &&
+      chmod 600 /home/user/.ssh/* 2>/dev/null || true &&
+      chmod -R 700 /home/user/projects/ || true &&
+      exec zsh
+      "
 volumes:
   dev_cache:
