@@ -22,6 +22,7 @@ net-tools
 nmap
 npm
 openssh
+python-pip
 p7zip
 ripgrep
 rust
