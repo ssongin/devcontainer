@@ -15,6 +15,36 @@ permissions:
   contents: write
 
 jobs:
+  validate-commit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Extract commit message
+        id: commit
+        run: |
+          COMMIT_MSG=$(git log -1 --pretty=%s)
+          echo "message=$COMMIT_MSG" >> $GITHUB_OUTPUT
+
+      - name: Validate commit prefix
+        run: |
+          COMMIT_MSG="${{ steps.commit.outputs.message }}"
+          echo "Commit message: $COMMIT_MSG"
+
+          shopt -s nocasematch
+
+          if [[ "$COMMIT_MSG" =~ ^merge ]]; then
+            echo "ℹ️ Merge commit detected — skipping validation."
+            exit 0
+          fi
+
+          if [[ "$COMMIT_MSG" =~ ^(epic|major|feat|fix|build|chore|perf|refactor|revert|style|cicd|docs|test)(\([^\)]*\))?: ]]; then
+            echo "✅ Valid commit prefix"
+          else
+            echo "❌ Invalid commit prefix"
+            exit 1
+          fi
+
   build-and-push:
     runs-on: ubuntu-latest
 
@@ -26,13 +56,41 @@ jobs:
           fetch-depth: 0  # Fetch all history to access Git tags
           fetch-tags: true
 
-      # Fetch all tags explicitly (optional, for debugging)
-      - name: Fetch All Tags
-        run: git fetch --tags
+      - name: Skip version bump for docs/test/Merge
+        if: startsWith(steps.commit.outputs.message, 'docs') || startsWith(steps.commit.outputs.message, 'test') || startsWith(steps.commit.outputs.message, 'Merge')
+        run: echo "Skipping version bump and Docker image for docs/test/Merge commit" && exit 0
 
-      # List all available tags (optional, for debugging)
-      - name: List Git Tags
-        run: git tag
+      - name: Get latest tag
+        id: version
+        run: |
+          git fetch --tags
+          latest=$(git tag --sort=-v:refname | grep -E '^[0-9]+\.[0-9]+\.[0-9]+' | head -n 1)
+          latest=${latest#v}
+          echo "latest=$latest" >> $GITHUB_OUTPUT
+
+      - name: Calculate next version
+        id: semver
+        run: |
+          IFS='.' read -r major minor patch <<< "${{ steps.version.outputs.latest || '0.0.0' }}"
+          prefix="${{ steps.commit.outputs.message }}"
+
+          case "$prefix" in
+            epic*|major*) major=$((major + 1)); minor=0; patch=0 ;;
+            feat*) minor=$((minor + 1)); patch=0 ;;
+            fix*|build*|chore*|perf*|refactor*|revert*|style*|cicd*) patch=$((patch + 1)) ;;
+            docs*|test*|Merge*) echo "No version bump"; exit 0 ;;
+            *) echo "Invalid commit prefix"; exit 1 ;;
+          esac
+
+          new_version="$major.$minor.$patch"
+          echo "version=$new_version" >> $GITHUB_OUTPUT
+
+      - name: Tag commit and push
+        run: |
+          git config user.name "github-actions"
+          git config user.email "github-actions@users.noreply.github.com"
+          git tag ${{ steps.semver.outputs.version }}
+          git push origin ${{ steps.semver.outputs.version }}
 
       # Set up Docker Buildx (supports multi-platform builds)
       - name: Set up Docker Buildx
@@ -57,28 +115,16 @@ jobs:
           new_tag="$major.$minor.$((patch + 1))"
           echo "New tag: $new_tag"
           echo "new_tag=$new_tag" >> $GITHUB_ENV
-            
-      # Build the Docker image
-      - name: Build Docker Image
-        run: |
-          docker build \
-            -t ${{ secrets.DOCKER_USERNAME }}/editor:${{ env.new_tag }} \
-            -t ${{ secrets.DOCKER_USERNAME }}/editor:latest .
 
-      # Push the Docker image to the registry
-      - name: Push Docker Image
-        run: |
-          docker push ${{ secrets.DOCKER_USERNAME }}/editor:${{ env.new_tag }}
-          docker push ${{ secrets.DOCKER_USERNAME }}/editor:latest
+      - name: Log in to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
 
-      # Push the new Git tag
-      - name: Push New Git Tag
+      - name: Build and push Docker image
         run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-          if git rev-parse "$new_tag" >/dev/null 2>&1; then
-            echo "Tag $new_tag already exists. Skipping tag creation."
-          else
-            git tag $new_tag
-            git push origin $new_tag
-          fi
+          IMAGE=ghcr.io/${{ github.repository }}:${{ steps.semver.outputs.version }}
+          docker build -t $IMAGE .
+          docker push $IMAGE
