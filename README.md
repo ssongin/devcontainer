@@ -22,62 +22,23 @@ Docker compose example is present [docker-compose.yaml](https://github.com/ssong
 
 All pacman packages are present in [packages.txt](https://github.com/ssongin/devcontainer/blob/master/packages.txt) file.
 
-#### Infrastructure
-
-* ansible
-* terraform
-
-#### Kubernetes
-
-* helm
-* k9s
-* kubectl
-* kustomize
-
-#### SDK
-
-* go
-* jdk-openjdk
-* lua
-* luarocks
-* maven
-* npm
-* python-pip
-* rust
-
-#### Miscelaneous
-
-* base-devel
-* bat
-* curl
-* eza
-* fd
-* fzf
-* git
-* glibc
-* lazygit
-* neovim
-* openssh
-* p7zip
-* ripgrep
-* sshpass
-* stow
-* tar
-* tree-sitter
-* tzdata
-* unzip
-* wget
-* yazi
-* zoxide
-* zsh
-
-#### Network
-
-* dnsutils
-* net-tools
-* nmap
-* tcpdump
-* tmux
+| **Archiving** | **Infrastructure** | **Kubernetes** | **Network**   | **Miscellaneous** | **SDK**     |
+|---------------|------------------|----------------|---------------|------------------|-------------|
+| p7zip         | ansible           | helm           | curl          | bat              | go          |
+| tar           | terraform         | k9s            | dnsutils      | base-devel       | jdk-openjdk |
+| unzip         |                  | kubectl        | net-tools     | eza              | lua         |
+| wget          |                  | kustomize      | nmap          | fd               | luarocks    |
+|               |                  |                | openssh       | fzf              | maven       |
+|               |                  |                | sshpass       | git              | npm         |
+|               |                  |                | tmux          | glibc            | python-pip  |
+|               |                  |                |               | lazygit          | rust        |
+|               |                  |                |               | neovim           |             |
+|               |                  |                |               | stow             |             |
+|               |                  |                |               | tree-sitter      |             |
+|               |                  |                |               | tzdata           |             |
+|               |                  |                |               | yazi             |             |
+|               |                  |                |               | zoxide           |             |
+|               |                  |                |               | zsh              |             |
 
 ### Pip
 
