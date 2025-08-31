@@ -20,6 +20,8 @@ Docker compose example is present [docker-compose.yaml](https://github.com/ssong
 
 ### Pacman
 
+All pacman packages are present in [packages.txt](https://github.com/ssongin/devcontainer/blob/master/packages.txt) file.
+
 #### Infrastructure
 
 * ansible
@@ -78,6 +80,8 @@ Docker compose example is present [docker-compose.yaml](https://github.com/ssong
 * tmux
 
 ### Pip
+
+All pip packages are present in [pip.txt](https://github.com/ssongin/devcontainer/blob/master/pip.txt) file.
 
 * pywinrm
 * kubernetes
