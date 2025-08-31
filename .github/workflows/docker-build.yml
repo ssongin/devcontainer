@@ -72,13 +72,18 @@ jobs:
         id: semver
         run: |
           IFS='.' read -r major minor patch <<< "${{ steps.version.outputs.latest || '0.0.0' }}"
-          prefix="${{ steps.commit.outputs.message }}"
+          raw="${{ steps.commit.outputs.message }}"
+
+          # Extract prefix before ":" or "("
+          prefix=$(echo "$raw" | sed -E 's/^([a-zA-Z]+)(\(.+\))?:.*/\1/')
+
+          echo "Detected prefix: $prefix"
 
           case "$prefix" in
-            epic*|major*) major=$((major + 1)); minor=0; patch=0 ;;
-            feat*) minor=$((minor + 1)); patch=0 ;;
-            fix*|build*|chore*|perf*|refactor*|revert*|style*|cicd*) patch=$((patch + 1)) ;;
-            docs*|test*|Merge*) echo "No version bump"; exit 0 ;;
+            epic|major) major=$((major + 1)); minor=0; patch=0 ;;
+            feat) minor=$((minor + 1)); patch=0 ;;
+            fix|build|chore|perf|refactor|revert|style|cicd) patch=$((patch + 1)) ;;
+            docs|test|Merge) echo "No version bump"; exit 0 ;;
             *) echo "Invalid commit prefix"; exit 1 ;;
           esac
 
