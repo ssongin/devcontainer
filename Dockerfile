@@ -1,5 +1,5 @@
 # Base image
-FROM archlinux:latest
+FROM archlinux:base-devel-20250824.0.410029
 
 # Create a new user
 ARG USERNAME=user
@@ -13,6 +13,8 @@ ENV LANG=en_US.UTF-8
 # Copy the list of applications
 COPY packages.txt /tmp/packages.txt
 COPY pip.txt /tmp/pip.txt
+
+SHELL ["/bin/sh", "-o", "pipefail", "-c"]
 
 # Update and install dependencies from file
 RUN pacman -Sy --noconfirm && \
@@ -56,7 +58,7 @@ WORKDIR /home/$USERNAME
 RUN git clone  --recurse-submodules --remote-submodules https://github.com/ssongin/dotfiles.git
 
 # Install Zsh and Oh My Zsh
-RUN yes | sh -c "$(wget -O- https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
+RUN yes | sh -c "$(wget --progress=dot:giga -O- https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
 
 WORKDIR /home/$USERNAME/dotfiles
 RUN stow --target="$HOME" lazyvim
