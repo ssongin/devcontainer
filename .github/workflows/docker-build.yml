@@ -56,6 +56,12 @@ jobs:
           fetch-depth: 0  # Fetch all history to access Git tags
           fetch-tags: true
 
+      - name: Extract commit message
+        id: commit
+        run: |
+          COMMIT_MSG=$(git log -1 --pretty=%s)
+          echo "message=$COMMIT_MSG" >> $GITHUB_OUTPUT
+
       - name: Skip version bump for docs/test/Merge
         if: startsWith(steps.commit.outputs.message, 'docs') || startsWith(steps.commit.outputs.message, 'test') || startsWith(steps.commit.outputs.message, 'Merge')
         run: echo "Skipping version bump and Docker image for docs/test/Merge commit" && exit 0
