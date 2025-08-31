@@ -58,7 +58,9 @@ WORKDIR /home/$USERNAME
 RUN git clone  --recurse-submodules --remote-submodules https://github.com/ssongin/dotfiles.git
 
 # Install Zsh and Oh My Zsh
-RUN yes | sh -c "$(wget --progress=dot:giga -O- https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
+RUN export RUNZSH=no CHSH=no \
+    && sh -c "$(wget -qO- https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
+
 
 WORKDIR /home/$USERNAME/dotfiles
 RUN stow --target="$HOME" lazyvim
