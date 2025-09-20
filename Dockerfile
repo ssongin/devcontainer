@@ -1,5 +1,5 @@
 # Base image
-FROM archlinux:base-devel-20250824.0.410029
+FROM archlinux:base-devel-20250914.0.420821
 
 # Create a new user
 ARG USERNAME=user
