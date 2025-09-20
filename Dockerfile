@@ -71,6 +71,8 @@ RUN stow --adopt --target="$HOME/.oh-my-zsh" oh-my-zsh
 
 RUN git restore .
 
+RUN export PATH="$HOME/go/bin:$PATH"
+
 WORKDIR /home/$USERNAME
 
 # Default command (Zsh shell)
