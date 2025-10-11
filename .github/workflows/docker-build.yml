@@ -19,7 +19,7 @@ jobs:
   validate-commit:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v5
 
       - name: Extract commit message
         id: commit
@@ -52,7 +52,7 @@ jobs:
     steps:
       # Checkout the repository, including submodules and tags
       - name: Checkout Repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v5
         with:
           fetch-depth: 0  # Fetch all history to access Git tags
           fetch-tags: true
