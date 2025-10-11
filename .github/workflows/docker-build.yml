@@ -21,10 +21,10 @@ jobs:
     steps:
       - uses: actions/checkout@v5
 
-      - name: Extract commit message
+      - name: Extract last non-merge commit message
         id: commit
         run: |
-          COMMIT_MSG=$(git log -1 --pretty=%s)
+          COMMIT_MSG=$(git log --no-merges -1 --pretty=%s)
           echo "message=$COMMIT_MSG" >> $GITHUB_OUTPUT
 
       - name: Validate commit prefix
@@ -57,10 +57,10 @@ jobs:
           fetch-depth: 0  # Fetch all history to access Git tags
           fetch-tags: true
 
-      - name: Extract commit message
+      - name: Extract last non-merge commit message
         id: commit
         run: |
-          COMMIT_MSG=$(git log -1 --pretty=%s)
+          COMMIT_MSG=$(git log --no-merges -1 --pretty=%s)
           echo "message=$COMMIT_MSG" >> $GITHUB_OUTPUT
 
       - name: Skip version bump for docs/test/Merge
