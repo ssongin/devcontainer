@@ -13,6 +13,7 @@ ENV LANG=en_US.UTF-8
 # Copy the list of applications
 COPY packages.txt /tmp/packages.txt
 COPY pip.txt /tmp/pip.txt
+COPY golang.txt /tmp/golang.txt
 
 SHELL ["/bin/sh", "-o", "pipefail", "-c"]
 
@@ -22,6 +23,14 @@ RUN pacman -Sy --noconfirm && \
   pacman -Scc --noconfirm
 
 RUN pip3 install --no-cache-dir --break-system-packages -r /tmp/pip.txt
+
+# Install Go and Go tools from golang.txt
+RUN mkdir -p /go/bin && \
+  export GOBIN=/go/bin && export PATH=$PATH:/go/bin && \
+  while IFS= read -r tool; do \
+    go install "$tool"; \
+  done < /tmp/golang.txt && \
+  ln -s /go/bin/* /usr/local/bin/
 
 # Set the timezone
 RUN ln -sf /usr/share/zoneinfo/Europe/Vilnius /etc/localtime && \
