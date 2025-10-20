@@ -30,6 +30,7 @@ ripgrep
 rust
 sshpass
 stow
+talosctl
 tar
 tcpdump
 terraform
