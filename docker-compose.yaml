@@ -1,6 +1,6 @@
 services:
   dev:
-    image: ghcr.io/ssongin/devcontainer:1.5.0
+    image: ghcr.io/ssongin/devcontainer:1.6.0
     container_name: dev
     stdin_open: true
     tty: true
