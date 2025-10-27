@@ -12,8 +12,8 @@ services:
     ports:
       - "8080:8080"
       - "3000:3000"
-    environment:
-      - DISPLAY=${DISPLAY}
+      - "80:80"
+      - "443:443"
     working_dir: /home/user/projects
     network_mode: bridge
     restart: unless-stopped

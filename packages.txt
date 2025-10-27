@@ -16,6 +16,7 @@ k9s
 kubectl
 kustomize
 lazygit
+libxml2
 lua
 luarocks
 maven
