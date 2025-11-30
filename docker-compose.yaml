@@ -5,6 +5,9 @@ services:
     stdin_open: true
     tty: true
     volumes:
+      - ./semaphore_data/config:/etc/semaphore       # semaphore config.json lives here after setup
+      - ./semaphore_data/db:/var/lib/semaphore       # sqlite DB file (if using sqlite) and projects
+      - ./semaphore_data/log:/var/log/semaphore
       - "C:/Users/ssong/Projects:/home/user/projects"
       - "C:/Users/ssong/.kube:/home/user/.kube"
       - "C:/Users/ssong/.ssh:/home/user/.ssh"
@@ -22,8 +25,14 @@ services:
       sudo chown -R user:user /home/user &&
       chmod 700 /home/user/.ssh &&
       chmod 600 /home/user/.ssh/* 2>/dev/null || true &&
-      chmod -R 700 /home/user/projects/ || true &&
+      chmod -R 755 /home/user/projects/ || true &&
       exec zsh
       "
+    environment:
+      # Use sqlite by default (no external DB required)
+      - SEMAPHORE_DB_DIALECT=sqlite
+      - SEMAPHORE_SQLITE_HOST=/var/lib/semaphore/semaphore.db
+      # Optional: run in non-TLS mode by default; put behind reverse proxy for TLS
+      - SEMAPHORE_TLS_ENABLED=false
 volumes:
   dev_cache:

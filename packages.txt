@@ -2,6 +2,7 @@ aarch64-linux-gnu-gcc
 ansible
 base-devel
 bat
+ca-certificates
 curl
 dnsutils
 eza
@@ -29,6 +30,7 @@ python-pip
 p7zip
 ripgrep
 rust
+sqlite 
 sshpass
 stow
 talosctl
