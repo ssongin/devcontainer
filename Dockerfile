@@ -6,14 +6,6 @@ ARG USERNAME=user
 ARG USER_UID=1000
 ARG USER_GID=1000
 
-# Semaphore
-ARG SEMAPHORE_VERSION=2.16.45
-
-# Semaphore environment variables
-ENV SEMAPHORE_VERSION=${SEMAPHORE_VERSION}
-ENV SEMAPHORE_HOME=/var/lib/semaphore
-ENV SEMAPHORE_CONFIG_DIR=/etc/semaphore
-
 # Set environment variables
 ENV TZ=Europe/Vilnius
 ENV LANG=en_US.UTF-8
@@ -39,18 +31,6 @@ RUN mkdir -p /go/bin && \
     go install "$tool"; \
   done < /tmp/golang.txt && \
   ln -s /go/bin/* /usr/local/bin/
-
-# Install Semaphore
-RUN curl -fsSL -o /tmp/semaphore.tar.gz \
-      "https://github.com/semaphoreui/semaphore/releases/download/v${SEMAPHORE_VERSION}/semaphore_${SEMAPHORE_VERSION}_linux_amd64.tar.gz" \
-  && tar -xzf /tmp/semaphore.tar.gz -C /tmp \
-  && mv /tmp/semaphore /usr/local/bin/semaphore \
-  && chmod +x /usr/local/bin/semaphore \
-  && rm -rf /tmp/*
-
-# Create config & data dirs that will be mounted/persisted
-RUN mkdir -p ${SEMAPHORE_CONFIG_DIR} ${SEMAPHORE_HOME} /var/log/semaphore \
-  && chown -R root:root ${SEMAPHORE_CONFIG_DIR} ${SEMAPHORE_HOME} /var/log/semaphore
 
 # Set the timezone
 RUN ln -sf /usr/share/zoneinfo/Europe/Vilnius /etc/localtime && \
@@ -102,15 +82,7 @@ RUN git restore .
 
 RUN export PATH="$HOME/go/bin:$PATH"
 
-# Expose default Semaphore UI port
-EXPOSE 3000
-
 WORKDIR /home/$USERNAME
 
 # Default command (Zsh shell)
-# CMD ["zsh"]
-
-# Entrypoint: run semaphore server (use --config to point to config.json if you create one)
-# If you prefer to run interactive setup first: `docker exec -it <container> semaphore setup`
-# After setup the server can be started with `semaphore server --config /etc/semaphore/config.json`
-CMD ["semaphore", "server", "--config", "/etc/semaphore/config.json"]
+CMD ["zsh"]
